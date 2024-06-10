@@ -15,8 +15,19 @@ class Palka(sprite.Sprite):
         super().__init__()
         self.x = x
         self.y = y
-     
-            
+    
+    def move_up(self):
+        self.y -= 10
+
+    def move_down(self):
+        self.y += 10
+
+    def update(self):
+        if self.y < 0:
+            self.y = 0
+        if self.y > WIN_HEIGHT - 100:
+            self.y = WIN_HEIGHT - 100
+
     def draw(self):
         draw.rect(window, BLACK, (self.x, self.y, 20, 100), width=0)
 
@@ -36,15 +47,18 @@ while run:
             run = False
     pressed = key.get_pressed()
     if pressed[K_q]:
-        palkaA.y -= 10  
+        palkaA.move_up()  
     if pressed[K_a]:
-        palkaA.y += 10        
+        palkaA.move_down()       
 
     if pressed[K_p]:
-        palkaB.y -= 10  
+        palkaB.move_up()
     if pressed[K_l]:
-        palkaB.y += 10        
+        palkaB.move_down()       
 
+
+    palkaA.update()
+    palkaB.update()
 
     window.fill(RED)    
     palkaA.draw()
