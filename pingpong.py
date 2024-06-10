@@ -15,24 +15,18 @@ class Palka(sprite.Sprite):
         super().__init__()
         self.x = x
         self.y = y
-
-    def update(self, action):
-        if action == 'down':
-            self.y += 10
-        elif action == 'up':
-            self.y -= 10
-        
+     
             
     def draw(self):
-        draw.rect(window, BLACK, (self.x, self.y, 20, 100), width=2)
+        draw.rect(window, BLACK, (self.x, self.y, 20, 100), width=0)
 
 window = display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 display.set_caption("Ping Pong")
 clock = time.Clock()
 
 
-palkaA = Palka(100,100)
-action = "stop"
+palkaA = Palka(10,10)
+palkaB = Palka(WIN_WIDTH - 30, 10)
 
 run = True
 while run:
@@ -40,19 +34,21 @@ while run:
     for ev in event.get():
         if ev.type == QUIT:
             run = False
-        if ev.type == KEYDOWN:
-            if ev.key == K_q:
-                action = "up"
-            if ev.key == K_a:
-                action = "down"
-        if ev.type == KEYUP:
-            action = "stop"
+    pressed = key.get_pressed()
+    if pressed[K_q]:
+        palkaA.y -= 10  
+    if pressed[K_a]:
+        palkaA.y += 10        
 
-    palkaA.update(action)
+    if pressed[K_p]:
+        palkaB.y -= 10  
+    if pressed[K_l]:
+        palkaB.y += 10        
 
 
     window.fill(RED)    
     palkaA.draw()
+    palkaB.draw()
 
     display.update()
     clock.tick(FPS)
