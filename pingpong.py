@@ -15,21 +15,22 @@ class Palka(sprite.Sprite):
         super().__init__()
         self.x = x
         self.y = y
+        self.rect = Rect(x, y, 20, 100)
     
     def move_up(self):
-        self.y -= 10
+        self.rect.y -= 10
 
     def move_down(self):
-        self.y += 10
+        self.rect.y += 10
 
     def update(self):
-        if self.y < 0:
-            self.y = 0
-        if self.y > WIN_HEIGHT - 100:
-            self.y = WIN_HEIGHT - 100
+        if self.rect.y < 0:
+            self.rect.y = 0
+        if self.rect.y > WIN_HEIGHT - 100:
+            self.rect.y = WIN_HEIGHT - 100
 
     def draw(self):
-        draw.rect(window, BLACK, (self.x, self.y, 20, 100), width=0)
+        draw.rect(window, BLACK, self.rect, width=0)
 
 class Lopta(sprite.Sprite):
     def __init__(self, x, y):
@@ -38,23 +39,20 @@ class Lopta(sprite.Sprite):
         self.y = y
         self.x_direction = 1
         self.y_direction = 1
+        self.rect = Rect(x, y, 20, 20)
 
     def update(self):
-        if self.x > WIN_WIDTH - 5:
-            self.x_direction = -1
-        if self.x < 5:
-            self.x_direction = 1
-
-        if self.y > WIN_HEIGHT - 5:
-            self.y_direction = -1
-        if self.y < 5:
-            self.y_direction = 1
-
-        self.x += self.x_direction * 5
-        self.y += self.y_direction * 5
+        if self.rect.x > WIN_WIDTH - 5 or self.rect.x < 5:
+            self.x_direction *= -1
+        
+        if self.rect.y > WIN_HEIGHT - 5 or self.rect.y < 5:
+            self.y_direction *= -1
+        
+        self.rect.x += self.x_direction * 5
+        self.rect.y += self.y_direction * 5
 
     def draw(self):
-        draw.circle(window, WHITE, (self.x, self.y), 10)
+        draw.circle(window, WHITE, (self.rect.x + 10, self.rect.y + 10), 10)
 
 
 
@@ -74,6 +72,7 @@ while run:
     for ev in event.get():
         if ev.type == QUIT:
             run = False
+
     pressed = key.get_pressed()
     if pressed[K_q]:
         palkaA.move_up()  
@@ -89,6 +88,11 @@ while run:
     palkaA.update()
     palkaB.update()
     lopta.update()
+
+    if sprite.collide_rect(palkaA, lopta) or sprite.collide_rect(palkaB, lopta):
+        lopta.x_direction *= -1
+        lopta.y_direction *= 1
+        
 
     window.fill(RED)    
     palkaA.draw()
